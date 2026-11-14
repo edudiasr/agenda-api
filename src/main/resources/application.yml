@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: agenda-api
+  datasource:
+    # em partes, porque é assim que os serviços de hospedagem entregam os dados do banco
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:agenda}${DB_PARAMS:}
+    username: ${DB_USER:agenda}
+    password: ${DB_PASSWORD:agenda_dev}
+  jpa:
+    open-in-view: false        # nada de consulta ao banco escondida na hora de montar o JSON
+    hibernate:
+      ddl-auto: validate       # quem cria as tabelas é o Flyway; o Hibernate só confere
+  jackson:
+    time-zone: America/Sao_Paulo
+
+agenda:
+  fuso: America/Sao_Paulo
+  # antecedência mínima pra marcar e prazo pra cancelar
+  antecedencia-minutos: 30
+  cancelamento-horas: 2
+  cors-origens: ${CORS_ORIGENS:http://localhost:5173}
+  jwt-segredo: ${JWT_SEGREDO:segredo-de-desenvolvimento-troque-em-producao-32b}
+  token-horas: 8
+  admin-email: ${ADMIN_EMAIL:}
+  admin-senha: ${ADMIN_SENHA:}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
