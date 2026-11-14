@@ -1,0 +1,33 @@
+# Blueprint do Render: cria o banco PostgreSQL e a API ligados entre si.
+# No painel do Render: New > Blueprint > escolher este repositório.
+databases:
+  - name: agenda-db
+    plan: free
+    databaseName: agenda
+    user: agenda
+
+services:
+  - type: web
+    name: agenda-api
+    runtime: docker
+    plan: free
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: DB_HOST
+        fromDatabase: { name: agenda-db, property: host }
+      - key: DB_PORT
+        fromDatabase: { name: agenda-db, property: port }
+      - key: DB_NAME
+        fromDatabase: { name: agenda-db, property: database }
+      - key: DB_USER
+        fromDatabase: { name: agenda-db, property: user }
+      - key: DB_PASSWORD
+        fromDatabase: { name: agenda-db, property: password }
+      - key: JWT_SEGREDO
+        generateValue: true          # o Render gera um segredo aleatório
+      - key: ADMIN_EMAIL
+        sync: false                  # preenchido no painel, não fica no repositório
+      - key: ADMIN_SENHA
+        sync: false
+      - key: CORS_ORIGENS
+        value: https://edudiasr.github.io
